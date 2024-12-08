@@ -1,5 +1,11 @@
 pipeline {
-    agent any
+        agent {
+        docker {
+            image 'maven:3-alpine'  // Use a Docker image for the pipeline's agent
+            label 'docker'          // Specify label if needed for a specific node
+            args '-v /tmp:/tmp'     // Optional arguments to pass to the Docker container
+        }
+    }
     
     environment {
         DOCKER_IMAGE_NAME = 'productservice'
