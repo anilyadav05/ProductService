@@ -8,6 +8,13 @@ pipeline {
     }
     
     stages {
+        stage('Check Environment') {
+            steps {
+                sh 'docker --version || echo "Docker not found"'
+                sh 'docker ps || echo "Cannot connect to Docker daemon"'
+            }
+        }
+        
         stage('Clone Repository') {
             steps {
                 git url: "${GIT_REPO}", branch: 'main'
