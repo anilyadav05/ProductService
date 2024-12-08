@@ -8,10 +8,22 @@ pipeline {
     }
     
     stages {
-        stage('Check Environment') {
             steps {
-                sh 'docker --version || echo "Docker not found"'
-                sh 'docker ps || echo "Cannot connect to Docker daemon"'
+                script {
+                    echo "Checking if Docker is installed..."
+                    // Check if Docker is installed, and install it if not
+                    sh '''
+                    if ! command -v docker &> /dev/null; then
+                        echo "Docker not found, installing..."
+                        sudo apt-get update
+                        sudo apt-get install -y docker.io
+                        sudo systemctl start docker
+                        sudo systemctl enable docker
+                    else
+                        echo "Docker is already installed."
+                    fi
+                    '''
+                }
             }
         }
         
