@@ -6,25 +6,30 @@ pipeline {
         DOCKER_TAG = 'latest'
         GIT_REPO = 'https://github.com/anilyadav05/ProductService.git'
     }
-
+    
     stages {
         stage('Clone Repository') {
             steps {
-                script {
-                    // Clone the Git repository
-                    git url: "${GIT_REPO}", branch: 'main'
-                }
+                git url: "${GIT_REPO}", branch: 'main'
             }
         }
         
         stage('Build Docker Image') {
             steps {
-                script {
-                    // Build Docker image
-                    sh "docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_TAG} ."
-                }
+                sh "docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_TAG} ."
+            }
+        }
+        
+        stage('Run Docker Container') {
+            steps {
+                sh "docker run -d --name ${DOCKER_IMAGE_NAME} ${DOCKER_IMAGE_NAME}:${DOCKER_TAG}"
             }
         }
     }
-
+    
+    post {
+        always {
+            sh "docker system prune -af || true"
+        }
+    }
 }
