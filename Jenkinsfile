@@ -26,11 +26,5 @@ pipeline {
             }
         }
     }
-    
-    post {
-        always {
-            // Clean-up Docker images
-            sh "docker system prune -af"
-        }
-    }
+
 }
