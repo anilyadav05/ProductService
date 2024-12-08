@@ -2,18 +2,17 @@ pipeline {
     agent any
     
     environment {
-        // Set any environment variables you might need
-        DOCKER_IMAGE_NAME = 'productservice' // Change this to your desired Docker image name
-        DOCKER_TAG = 'latest'        // Tag for the Docker image
-        GIT_REPO = 'https://github.com/anilyadav05/ProductService.git' // Replace with your Git repo URL
+        DOCKER_IMAGE_NAME = 'productservice'
+        DOCKER_TAG = 'latest'
+        GIT_REPO = 'https://github.com/anilyadav05/ProductService.git'
     }
-    
+
     stages {
         stage('Clone Repository') {
             steps {
                 script {
                     // Clone the Git repository
-                    git url: "${GIT_REPO}", branch: 'main' // Replace 'main' with your desired branch
+                    git url: "${GIT_REPO}", branch: 'main'
                 }
             }
         }
@@ -21,10 +20,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build the Docker image from the Dockerfile in the repository
-                    sh """
-                    docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_TAG} .
-                    """
+                    // Build Docker image
+                    sh "docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_TAG} ."
                 }
             }
         }
@@ -32,7 +29,7 @@ pipeline {
     
     post {
         always {
-            // Clean up, e.g., remove any temporary Docker images
+            // Clean-up Docker images
             sh "docker system prune -af"
         }
     }
