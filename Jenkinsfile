@@ -6,8 +6,7 @@ pipeline {
         DOCKER_TAG = 'latest'
         GIT_REPO = 'https://github.com/anilyadav05/ProductService.git'
     }
-    
-    stages {
+        stage('Install Docker') {
             steps {
                 script {
                     echo "Checking if Docker is installed..."
