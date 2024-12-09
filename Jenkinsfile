@@ -1,10 +1,5 @@
 pipeline {
-            agent {
-        docker {
-            image 'maven:3.8.5-jdk-11' // Example of using a Maven Docker image
-            args '-v /var/run/docker.sock:/var/run/docker.sock' // Mount Docker socket
-        }
-    }  
+            agent any 
     environment {
         DOCKER_IMAGE_NAME = 'productservice'
         DOCKER_TAG = 'latest'
