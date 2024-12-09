@@ -36,11 +36,13 @@ pipeline {
         }
                    success {
             slackSend channel: '#all-productservice', 
+                        tokenCredentialId:'slack-bot-token',
                       message: "SUCCESS: Pipeline completed successfully for ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}. :tada:"
         }
         
         failure {
             slackSend channel: '#all-productservice', 
+                   tokenCredentialId:'slack-bot-token',
                       message: "FAILURE: Pipeline failed for ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}. :x:"
         }
     }
