@@ -1,6 +1,9 @@
 pipeline {
-                agent {
-        docker { image 'docker:latest' }
+      agent {
+        docker {
+            image 'docker:19.03.12-dind'  // Use Docker-in-Docker image
+            args '--privileged'  // Allows the container to run Docker commands
+        }
     }
     environment {
         DOCKER_IMAGE_NAME = 'productservice'
