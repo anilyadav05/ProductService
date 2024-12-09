@@ -1,19 +1,18 @@
 pipeline {
-        agent {
-        docker {
-            image 'maven:3-alpine'  // Use a Docker image for the pipeline's agent
-            label 'docker'          // Specify label if needed for a specific node
-            args '-v /tmp:/tmp'     // Optional arguments to pass to the Docker container
-        }
-    }
-    
+        agent any    
     environment {
         DOCKER_IMAGE_NAME = 'productservice'
         DOCKER_TAG = 'latest'
         GIT_REPO = 'https://github.com/anilyadav05/ProductService.git'
     }
       stages {
-          stage('Install Docker') {
+        
+        stage('Clone Repository') {
+            steps {
+                git url: "${GIT_REPO}", branch: 'main'
+            }
+        }
+        stage('Install Docker') {
             steps {
                 script {
                     echo "Checking if Docker is installed..."
@@ -33,12 +32,6 @@ pipeline {
             }
         }
         
-        stage('Clone Repository') {
-            steps {
-                git url: "${GIT_REPO}", branch: 'main'
-            }
-        }
-        
         stage('Build Docker Image') {
             steps {
                 sh "docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_TAG} ."
@@ -55,6 +48,15 @@ pipeline {
     post {
         always {
             sh "docker system prune -af || true"
+        }
+                   success {
+            slackSend channel: '#all-productservice', 
+                      message: "SUCCESS: Pipeline completed successfully for ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}. :tada:"
+        }
+        
+        failure {
+            slackSend channel: '#all-productservice', 
+                      message: "FAILURE: Pipeline failed for ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}. :x:"
         }
     }
 }
