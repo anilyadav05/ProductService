@@ -14,7 +14,12 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
-                sh "docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_TAG} ."
+                  script{
+                  withDockerRegistry(credentialsId: '37b80184-687c-4abb-967b-00f8c2843614', toolName: 'docker') {
+                      sh "docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_TAG} ."
+                  }
+                  }
+                
             }
         }
         
