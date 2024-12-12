@@ -15,7 +15,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                   script{
-                  withDockerRegistry(credentialsId: '85af8d9f-a8eb-4b21-84ee-df0b8e81f5a7', toolName: 'docker') {
+                  withDockerRegistry(credentialsId: '37b80184-687c-4abb-967b-00f8c2843614', toolName: 'docker') {
                       sh "docker build -t anilyadav05/${DOCKER_IMAGE_NAME}:${DOCKER_TAG} ."
                   }
                   }
