@@ -48,16 +48,6 @@ pipeline {
     }
     
 post {
-    always {
-        // Cleanup Docker artifacts
-        script {
-            try {
-                sh "docker system prune -af || true"
-            } catch (Exception e) {
-                echo "Failed to clean up Docker artifacts: ${e.getMessage()}"
-            }
-        }
-    }
     success {
         // Send a Slack notification on success
         script {
