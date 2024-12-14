@@ -1,9 +1,17 @@
 pipeline {
-      agent any
+          agent {
+        docker { 
+            image 'docker:20.10.11' // Use a Docker image to run build steps
+            args '-v /var/run/docker.sock:/var/run/docker.sock' // Mount Docker socket
+        }
+    }
     environment {
         DOCKER_IMAGE_NAME = 'productservice'
         DOCKER_TAG = 'latest'
         GIT_REPO = 'https://github.com/anilyadav05/ProductService.git'
+        REGISTRY_URL = 'https://hub.docker.com/u/anilyadav05' // Replace with your Docker registry
+        REGISTRY_CREDENTIALS = '85af8d9f-a8eb-4b21-84ee-df0b8e81f5a7' // Jenkins credentials ID for registry
+        IMAGE_NAME = 'anilyadav05/productservice' // Replace with microservice name
     }
       stages {
         
@@ -14,18 +22,23 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
-                  script{
-                  withDockerRegistry(credentialsId: '37b80184-687c-4abb-967b-00f8c2843614', toolName: 'docker') {
-                      sh "docker build -t anilyadav05/${DOCKER_IMAGE_NAME}:${DOCKER_TAG} ."
-                  }
-                  }
-                
+                script {
+                    sh "docker build -t ${REGISTRY_URL}/${IMAGE_NAME}:${BUILD_NUMBER} ."
+                }
             }
         }
-        
-        stage('Run Docker Container') {
+        stage('Login to Docker Registry') {
             steps {
-                sh "docker run -d --name ${DOCKER_IMAGE_NAME} ${DOCKER_IMAGE_NAME}:${DOCKER_TAG}"
+                script {
+                    sh "echo $DOCKER_REGISTRY_PASSWORD | docker login -u $DOCKER_REGISTRY_USERNAME --password-stdin ${REGISTRY_URL}"
+                }
+            }
+        }
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    sh "docker push ${REGISTRY_URL}/${IMAGE_NAME}:${BUILD_NUMBER}"
+                }
             }
         }
     }
