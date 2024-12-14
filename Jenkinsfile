@@ -47,33 +47,53 @@ pipeline {
         }
     }
     
-    post {
-        always {
-            sh "docker system prune -af || true"
+post {
+    always {
+        // Cleanup Docker artifacts
+        script {
+            try {
+                sh "docker system prune -af || true"
+            } catch (Exception e) {
+                echo "Failed to clean up Docker artifacts: ${e.getMessage()}"
+            }
         }
-                success {
+    }
+    success {
         // Send a Slack notification on success
-        slackSend(
-            baseUrl: '', // Optional: Leave empty if using Slack plugin defaults
-            teamDomain: 'productservice',
-            channel: '#all-productservice',
-            color: 'good', // Green for success
-            tokenCredentialId: 'slack-bot-token',
-            botUser: true,
-            message: "SUCCESS: Pipeline completed successfully for ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}. :tada:"
-        )
+        script {
+            try {
+                slackSend(
+                    baseUrl: '', // Optional: Leave empty if using Slack plugin defaults
+                    teamDomain: 'productservice',
+                    channel: '#all-productservice',
+                    color: 'good', // Green for success
+                    tokenCredentialId: 'slack-bot-token',
+                    botUser: true,
+                    message: "SUCCESS: Pipeline completed successfully for ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}. :tada:"
+                )
+            } catch (Exception e) {
+                echo "Failed to send Slack notification: ${e.getMessage()}"
+            }
+        }
     }
     failure {
         // Send a Slack notification on failure
-        slackSend(
-            baseUrl: '', // Optional: Leave empty if using Slack plugin defaults
-            teamDomain: 'productservice',
-            channel: '#all-productservice',
-            color: 'danger', // Red for failure
-            tokenCredentialId: 'slack-bot-token',
-            botUser: true,
-            message: "FAILURE: Pipeline failed for ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}. :x:"
-        )
+        script {
+            try {
+                slackSend(
+                    baseUrl: '', // Optional: Leave empty if using Slack plugin defaults
+                    teamDomain: 'productservice',
+                    channel: '#all-productservice',
+                    color: 'danger', // Red for failure
+                    tokenCredentialId: 'slack-bot-token',
+                    botUser: true,
+                    message: "FAILURE: Pipeline failed for ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}. :x:"
+                )
+            } catch (Exception e) {
+                echo "Failed to send Slack notification: ${e.getMessage()}"
+            }
+        }
     }
-    }
+}
+
 }
