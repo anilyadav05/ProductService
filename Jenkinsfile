@@ -5,6 +5,7 @@ pipeline {
     agent {
         docker {
             image "${params.DOCKER_IMAGE}"
+            label 'docker-enabled-node'
             args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
