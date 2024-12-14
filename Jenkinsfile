@@ -13,7 +13,7 @@ pipeline {
         DOCKER_IMAGE_NAME = 'productservice'
         DOCKER_TAG = 'latest'
         GIT_REPO = 'https://github.com/anilyadav05/ProductService.git'
-        REGISTRY_URL = 'https://hub.docker.com/u/anilyadav05' // Replace with your Docker registry
+        REGISTRY_URL = 'https://hub.docker.com' // Replace with your Docker registry
         REGISTRY_CREDENTIALS = '85af8d9f-a8eb-4b21-84ee-df0b8e81f5a7' // Jenkins credentials ID for registry
         IMAGE_NAME = 'anilyadav05/productservice' // Replace with microservice name
     }
