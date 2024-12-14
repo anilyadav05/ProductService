@@ -1,8 +1,11 @@
 pipeline {
-          agent {
-        docker { 
-            image 'docker:20.10.11' // Use a Docker image to run build steps
-            args '-v /var/run/docker.sock:/var/run/docker.sock' // Mount Docker socket
+    parameters {
+        string(name: 'DOCKER_IMAGE', defaultValue: 'docker:24.0.2', description: 'Docker image to use')
+    }
+    agent {
+        docker {
+            image "${params.DOCKER_IMAGE}"
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
     environment {
